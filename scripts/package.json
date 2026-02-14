@@ -1,0 +1,9 @@
+{
+  "name": "banhmi-ops-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Banh Mi Ops report rendering scripts",
+  "dependencies": {
+    "handlebars": "^4.7.8"
+  }
+}
