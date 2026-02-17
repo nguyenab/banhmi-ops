@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{operation.title}} - Banh Mi Ops Debrief</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0A0F1A;
+      --bg-secondary: #111827;
+      --bg-card: #1F2937;
+      --border-card: #374151;
+      --text-primary: #F9FAFB;
+      --text-body: #E5E7EB;
+      --text-muted: #9CA3AF;
+      --accent: #0D9488;
+      --accent-light: #14B8A6;
+      --success: #10B981;
+      --error: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-body);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 3rem 0 2rem;
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: 2.5rem;
+    }
+
+    .header-brand {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-badge.success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-badge.error { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .status-badge.running { background: rgba(59, 130, 246, 0.15); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .status-badge.skipped { background: rgba(156, 163, 175, 0.15); color: var(--text-muted); border: 1px solid rgba(156, 163, 175, 0.3); }
+    .status-badge.unknown { background: rgba(156, 163, 175, 0.15); color: var(--text-muted); border: 1px solid rgba(156, 163, 175, 0.3); }
+
+    /* Sections */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .card-body {
+      font-size: 0.875rem;
+      color: var(--text-body);
+    }
+
+    .card-body p {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Summary */
+    .summary-text {
+      font-size: 1rem;
+      color: var(--text-body);
+      line-height: 1.8;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    /* Task Cards */
+    .task-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+      border-left: 3px solid var(--border-card);
+    }
+
+    .task-card.success { border-left-color: var(--success); }
+    .task-card.error { border-left-color: var(--error); }
+    .task-card.running { border-left-color: var(--info); }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      gap: 1rem;
+    }
+
+    .task-title {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .task-meta {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .task-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .task-deliverables {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-card);
+    }
+
+    .task-deliverables h4 {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .deliverable-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .deliverable-list li {
+      font-size: 0.85rem;
+      color: var(--text-body);
+      padding: 0.2rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .deliverable-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.6rem;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Cost Section */
+    .cost-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .cost-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .cost-value {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cost-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.25rem;
+    }
+
+    /* Model table */
+    .model-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .model-table th,
+    .model-table td {
+      padding: 0.6rem 1rem;
+      text-align: left;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .model-table th {
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .model-table td {
+      color: var(--text-body);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.5rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border-card);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.65rem;
+      top: 0.4rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg-primary);
+    }
+
+    .timeline-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
+
+    .timeline-label {
+      font-size: 0.9rem;
+      color: var(--text-body);
+    }
+
+    /* Analyst Findings */
+    .finding {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .finding-severity {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.1rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.4rem;
+    }
+
+    .finding-severity.critical { background: rgba(239, 68, 68, 0.15); color: var(--error); }
+    .finding-severity.warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .finding-severity.info { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+    .finding-severity.pass { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+
+    .finding-text {
+      font-size: 0.875rem;
+      color: var(--text-body);
+    }
+
+    /* Assessment */
+    .assessment {
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border-card);
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: #fff; color: #333; }
+      .card, .task-card, .finding, .assessment, .summary-text, .cost-card {
+        background: #f9f9f9;
+        border-color: #ddd;
+      }
+      .section-title, .card-title, .task-title, h1 { color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-brand">Banh Mi Ops Debrief</div>
+      <h1>{{operation.title}}</h1>
+      <div class="header-meta">
+        <span>
+          <span class="status-badge {{statusClass operation.status}}">{{operation.status}}</span>
+        </span>
+        <span>{{formatDate operation.timestamp}}</span>
+        {{#if operation.id}}<span>ID: {{operation.id}}</span>{{/if}}
+      </div>
+    </div>
+
+    <!-- Task Stats -->
+    {{#if taskStats}}
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-value">{{taskStats.total}}</div>
+        <div class="stat-label">Tasks</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" style="color: var(--success)">{{taskStats.complete}}</div>
+        <div class="stat-label">Complete</div>
+      </div>
+      {{#if taskStats.failed}}
+      <div class="stat">
+        <div class="stat-value" style="color: var(--error)">{{taskStats.failed}}</div>
+        <div class="stat-label">Failed</div>
+      </div>
+      {{/if}}
+      {{#if taskStats.skipped}}
+      <div class="stat">
+        <div class="stat-value" style="color: var(--text-muted)">{{taskStats.skipped}}</div>
+        <div class="stat-label">Skipped</div>
+      </div>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    <!-- Executive Summary -->
+    {{#if summary}}
+    <div class="section">
+      <h2 class="section-title">Executive Summary</h2>
+      <div class="summary-text">{{summary}}</div>
+    </div>
+    {{/if}}
+
+    <!-- Tasks -->
+    {{#if tasks}}
+    <div class="section">
+      <h2 class="section-title">Tasks</h2>
+      {{#each tasks}}
+      <div class="task-card {{statusClass this.status}}">
+        <div class="task-header">
+          <div class="task-title">{{this.title}}</div>
+          <span class="status-badge {{statusClass this.status}}">{{this.status}}</span>
+        </div>
+        <div class="task-meta">
+          {{#if this.worker}}<span>Worker: {{this.worker}}</span>{{/if}}
+          {{#if this.model}}<span>Model: {{this.model}}</span>{{/if}}
+          {{#if this.duration}}<span>Duration: {{this.duration}}</span>{{/if}}
+        </div>
+        {{#if this.description}}
+        <div class="card-body">
+          <p>{{this.description}}</p>
+        </div>
+        {{/if}}
+        {{#if this.deliverables}}
+        <div class="task-deliverables">
+          <h4>Deliverables</h4>
+          <ul class="deliverable-list">
+            {{#each this.deliverables}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    <!-- Cost Tracking -->
+    {{#if cost}}
+    <div class="section">
+      <h2 class="section-title">Cost Tracking</h2>
+      <div class="cost-grid">
+        {{#if cost.totalTokens}}
+        <div class="cost-card">
+          <div class="cost-value">{{formatNumber cost.totalTokens}}</div>
+          <div class="cost-label">Total Tokens</div>
+        </div>
+        {{/if}}
+        {{#if cost.totalInputTokens}}
+        <div class="cost-card">
+          <div class="cost-value">{{formatNumber cost.totalInputTokens}}</div>
+          <div class="cost-label">Input Tokens</div>
+        </div>
+        {{/if}}
+        {{#if cost.totalOutputTokens}}
+        <div class="cost-card">
+          <div class="cost-value">{{formatNumber cost.totalOutputTokens}}</div>
+          <div class="cost-label">Output Tokens</div>
+        </div>
+        {{/if}}
+      </div>
+
+      {{#if cost.models}}
+      <table class="model-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Input Tokens</th>
+            <th>Output Tokens</th>
+            <th>Calls</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each cost.models}}
+          <tr>
+            <td>{{this.name}}</td>
+            <td>{{formatNumber this.inputTokens}}</td>
+            <td>{{formatNumber this.outputTokens}}</td>
+            <td>{{this.calls}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    <!-- Timeline -->
+    {{#if timeline}}
+    <div class="section">
+      <h2 class="section-title">Timeline</h2>
+      <div class="timeline">
+        {{#each timeline}}
+        <div class="timeline-item">
+          <div class="timeline-time">{{formatDate this.time}}</div>
+          <div class="timeline-label">{{this.event}}</div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- Analyst Findings -->
+    {{#if reviewers.findings}}
+    <div class="section">
+      <h2 class="section-title">Analyst Findings</h2>
+      {{#each reviewers.findings}}
+      <div class="finding">
+        <div class="finding-severity {{this.severity}}">{{this.severity}}</div>
+        <div class="finding-text">{{this.message}}</div>
+        {{#if this.file}}<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem;">{{this.file}}{{#if this.line}}:{{this.line}}{{/if}}</div>{{/if}}
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    <!-- Overall Assessment -->
+    {{#if assessment}}
+    <div class="section">
+      <h2 class="section-title">Overall Assessment</h2>
+      <div class="assessment">{{assessment}}</div>
+    </div>
+    {{/if}}
+
+    <!-- Footer -->
+    <div class="footer">
+      Generated by <a href="https://github.com/nguyenab/banhmi-ops">Banh Mi Ops</a> v{{banhmiVersion}}
+      {{#if renderedAt}}&middot; Rendered {{formatDate renderedAt}}{{/if}}
+    </div>
+
+  </div>
+</body>
+</html>
