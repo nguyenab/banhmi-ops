@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banh Mi Ops | Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Carbon g100 dark palette */
+    --cds-background: #161616;
+    --cds-layer-01: #262626;
+    --cds-layer-02: #393939;
+    --cds-layer-hover: #353535;
+    --cds-layer-selected: #393939;
+    --cds-layer-active: #525252;
+    --cds-border-subtle: #393939;
+    --cds-border-strong: #6f6f6f;
+    --cds-text-primary: #f4f4f4;
+    --cds-text-secondary: #c6c6c6;
+    --cds-text-placeholder: #6f6f6f;
+    --cds-text-helper: #8d8d8d;
+    --cds-text-on-color: #ffffff;
+    --cds-text-inverse: #161616;
+    --cds-link-primary: #78a9ff;
+    --cds-icon-primary: #f4f4f4;
+    --cds-icon-secondary: #c6c6c6;
+    --cds-support-error: #ff8389;
+    --cds-support-success: #42be65;
+    --cds-support-warning: #f1c21b;
+    --cds-support-info: #4589ff;
+    --cds-interactive: #4589ff;
+    --cds-focus: #ffffff;
+    /* Accent colors */
+    --teal-60: #009d9a;
+    --teal-70: #005d5d;
+    --teal-bg: rgba(0, 157, 154, 0.12);
+    --blue-60: #0f62fe;
+    --blue-70: #0043ce;
+    --blue-bg: rgba(15, 98, 254, 0.12);
+    --green-50: #24a148;
+    --green-bg: rgba(36, 161, 72, 0.12);
+    --red-50: #da1e28;
+    --red-bg: rgba(218, 30, 40, 0.12);
+    --yellow-30: #f1c21b;
+    --yellow-bg: rgba(241, 194, 27, 0.10);
+    --purple-50: #a56eff;
+    --purple-bg: rgba(165, 110, 255, 0.12);
+    --magenta-50: #ee5396;
+    --magenta-bg: rgba(238, 83, 150, 0.12);
+    --cyan-40: #33b1ff;
+    --cyan-bg: rgba(51, 177, 255, 0.10);
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--cds-background);
+    color: var(--cds-text-primary);
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ========================================================
+     CARBON SHELL HEADER - 48px
+     ======================================================== */
+  .shell-header {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    background: var(--cds-layer-01);
+    border-bottom: 1px solid var(--cds-border-subtle);
+    padding: 0 16px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+
+  .shell-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    height: 100%;
+    padding-right: 24px;
+    border-right: 1px solid var(--cds-border-subtle);
+  }
+
+  .shell-header__brand-icon {
+    width: 20px;
+    height: 20px;
+    background: var(--teal-60);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .shell-header__brand-icon svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--cds-text-on-color);
+  }
+
+  .shell-header__brand-name {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.16px;
+    color: var(--cds-text-primary);
+  }
+
+  .shell-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-left: 16px;
+  }
+
+  .shell-header__nav-label {
+    font-size: 12px;
+    color: var(--cds-text-helper);
+    letter-spacing: 0.32px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .shell-header__center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .shell-header__right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .header-metric {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .header-metric__label {
+    font-size: 11px;
+    color: var(--cds-text-helper);
+    text-transform: uppercase;
+    letter-spacing: 0.32px;
+    font-weight: 500;
+  }
+
+  .header-metric__value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cds-text-primary);
+    letter-spacing: 0.32px;
+  }
+
+  /* Status Tags (Carbon-style) */
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16px;
+    border-radius: 0;
+    gap: 6px;
+  }
+
+  .status-tag--planning   { background: var(--teal-bg);   color: var(--teal-60);          }
+  .status-tag--executing  { background: var(--blue-bg);   color: var(--cds-support-info);  }
+  .status-tag--reviewing  { background: var(--yellow-bg); color: var(--yellow-30);         }
+  .status-tag--complete   { background: var(--green-bg);  color: var(--cds-support-success);}
+  .status-tag--failed     { background: var(--red-bg);    color: var(--cds-support-error);  }
+
+  .status-tag__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .status-tag--executing .status-tag__dot {
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  .demo-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16px;
+    background: var(--yellow-bg);
+    color: var(--yellow-30);
+    border-radius: 0;
+  }
+
+  /* ========================================================
+     THREE-COLUMN LAYOUT
+     ======================================================== */
+  .layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* LEFT SIDEBAR - 240px */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--cds-border-subtle);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--cds-background);
+  }
+
+  .sidebar-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--cds-border-subtle);
+  }
+
+  .sidebar-section:last-child {
+    border-bottom: none;
+  }
+
+  .sidebar-heading {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32px;
+    color: var(--cds-text-helper);
+    margin-bottom: 12px;
+  }
+
+  /* Operation info card */
+  .op-card {
+    background: var(--cds-layer-01);
+    border: 1px solid var(--cds-border-subtle);
+    padding: 12px;
+    border-radius: 0;
+  }
+
+  .op-card__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cds-text-primary);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .op-card__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+
+  .op-card__label {
+    color: var(--cds-text-helper);
+  }
+
+  .op-card__value {
+    color: var(--cds-text-secondary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* Cost breakdown bar chart */
+  .cost-bar-row {
+    margin-bottom: 10px;
+  }
+
+  .cost-bar-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .cost-bar-label {
+    color: var(--cds-text-secondary);
+  }
+
+  .cost-bar-value {
+    color: var(--cds-text-helper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  .cost-bar-track {
+    width: 100%;
+    height: 4px;
+    background: var(--cds-layer-02);
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .cost-bar-fill {
+    height: 100%;
+    border-radius: 0;
+    transition: width 0.5s ease;
+  }
+
+  .cost-bar-fill--input  { background: var(--cds-support-info); }
+  .cost-bar-fill--output { background: var(--teal-60);          }
+  .cost-bar-fill--total  { background: var(--purple-50);        }
+
+  /* Model tier usage bars */
+  .tier-bar-row {
+    margin-bottom: 8px;
+  }
+
+  .tier-bar-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  .tier-bar-name {
+    color: var(--cds-text-secondary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .tier-bar-count {
+    color: var(--cds-text-helper);
+    font-size: 11px;
+  }
+
+  .tier-bar-track {
+    width: 100%;
+    height: 6px;
+    background: var(--cds-layer-02);
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .tier-bar-fill {
+    height: 100%;
+    border-radius: 0;
+    transition: width 0.5s ease;
+  }
+
+  .tier-bar-fill--opus    { background: var(--purple-50);  }
+  .tier-bar-fill--sonnet  { background: var(--blue-60);    }
+  .tier-bar-fill--haiku   { background: var(--teal-60);    }
+  .tier-bar-fill--flash   { background: var(--yellow-30);  }
+  .tier-bar-fill--default { background: var(--cds-text-helper); }
+
+  /* ========================================================
+     CENTER - KANBAN COLUMNS
+     ======================================================== */
+  .kanban {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    min-width: 0;
+    background: var(--cds-background);
+  }
+
+  .kanban-col {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--cds-border-subtle);
+    overflow: hidden;
+  }
+
+  .kanban-col:last-child {
+    border-right: none;
+  }
+
+  .kanban-col__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--cds-border-subtle);
+    flex-shrink: 0;
+    background: var(--cds-background);
+  }
+
+  .kanban-col__title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32px;
+    color: var(--cds-text-helper);
+  }
+
+  .kanban-col__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 0;
+  }
+
+  .kanban-col--pending .kanban-col__badge  { background: rgba(141,141,141,0.2); color: var(--cds-text-helper);    }
+  .kanban-col--running .kanban-col__badge  { background: var(--blue-bg);        color: var(--cds-support-info);   }
+  .kanban-col--review  .kanban-col__badge  { background: var(--yellow-bg);      color: var(--yellow-30);          }
+  .kanban-col--complete .kanban-col__badge { background: var(--green-bg);       color: var(--cds-support-success);}
+
+  .kanban-col--pending .kanban-col__header  { border-bottom-color: var(--cds-border-subtle); }
+  .kanban-col--running .kanban-col__header  { border-bottom: 2px solid var(--cds-support-info); }
+  .kanban-col--review  .kanban-col__header  { border-bottom: 2px solid var(--yellow-30); }
+  .kanban-col--complete .kanban-col__header { border-bottom: 2px solid var(--cds-support-success); }
+
+  .kanban-col__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .kanban-col__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    font-size: 12px;
+    color: var(--cds-text-placeholder);
+    border: 1px dashed var(--cds-border-subtle);
+    margin: 4px;
+  }
+
+  /* Task cards */
+  .task-card {
+    background: var(--cds-layer-01);
+    border: 1px solid var(--cds-border-subtle);
+    border-left: 3px solid transparent;
+    padding: 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .task-card:hover {
+    background: var(--cds-layer-hover);
+  }
+
+  .task-card--selected {
+    background: var(--cds-layer-selected);
+    border-color: var(--teal-60);
+    border-left-color: var(--teal-60);
+  }
+
+  .task-card--pending  { border-left-color: var(--cds-text-placeholder); }
+  .task-card--running  { border-left-color: var(--cds-support-info);     }
+  .task-card--review   { border-left-color: var(--yellow-30);            }
+  .task-card--complete { border-left-color: var(--cds-support-success);  }
+  .task-card--failed   { border-left-color: var(--cds-support-error);    }
+
+  /* Running card pulse */
+  .task-card--running {
+    animation: card-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes card-pulse {
+    0%, 100% { box-shadow: inset 0 0 0 0 rgba(69, 137, 255, 0); }
+    50%      { box-shadow: inset 0 0 0 1px rgba(69, 137, 255, 0.2); }
+  }
+
+  .task-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .task-card__id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--cds-text-helper);
+  }
+
+  .task-card__model-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 1px 6px;
+    border-radius: 0;
+    letter-spacing: 0.32px;
+    text-transform: uppercase;
+  }
+
+  .task-card__model-tag--opus   { background: var(--purple-bg); color: var(--purple-50); }
+  .task-card__model-tag--sonnet { background: var(--blue-bg);   color: var(--cds-link-primary); }
+  .task-card__model-tag--haiku  { background: var(--teal-bg);   color: var(--teal-60);   }
+  .task-card__model-tag--flash  { background: var(--yellow-bg); color: var(--yellow-30); }
+
+  .task-card__title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cds-text-primary);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .task-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .task-card__worker {
+    color: var(--cds-text-secondary);
+    font-size: 11px;
+  }
+
+  .task-card__deps {
+    color: var(--cds-text-helper);
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .task-card__verdict {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32px;
+  }
+
+  .task-card__verdict--pass     { color: var(--cds-support-success); }
+  .task-card__verdict--fail     { color: var(--cds-support-error);   }
+  .task-card__verdict--revision { color: var(--yellow-30);           }
+
+  .task-card__running-indicator {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cds-support-info);
+    margin-right: 4px;
+    vertical-align: middle;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1);    }
+    50%      { opacity: 0.3; transform: scale(0.8); }
+  }
+
+  .task-card__sep {
+    width: 1px;
+    height: 10px;
+    background: var(--cds-border-subtle);
+    flex-shrink: 0;
+  }
+
+  /* ========================================================
+     RIGHT PANEL - 320px
+     ======================================================== */
+  .right-panel {
+    width: 320px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--cds-border-subtle);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--cds-background);
+  }
+
+  /* Detail section */
+  .detail {
+    flex-shrink: 0;
+    max-height: 50%;
+    overflow-y: auto;
+    border-bottom: 1px solid var(--cds-border-subtle);
+  }
+
+  .detail__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    color: var(--cds-text-placeholder);
+    gap: 8px;
+  }
+
+  .detail__empty-icon {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--cds-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+  }
+
+  .detail__empty-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--cds-text-placeholder);
+  }
+
+  .detail__empty-text {
+    font-size: 12px;
+  }
+
+  .detail__header {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--cds-border-subtle);
+  }
+
+  .detail__id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--cds-text-helper);
+    margin-bottom: 4px;
+  }
+
+  .detail__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--cds-text-primary);
+    line-height: 1.3;
+  }
+
+  .detail__body {
+    padding: 12px 16px;
+  }
+
+  .detail__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(57, 57, 57, 0.3);
+  }
+
+  .detail__row:last-child {
+    border-bottom: none;
+  }
+
+  .detail__row-label {
+    color: var(--cds-text-helper);
+    font-size: 12px;
+  }
+
+  .detail__row-value {
+    color: var(--cds-text-secondary);
+    font-size: 12px;
+    text-align: right;
+  }
+
+  .detail__section-heading {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32px;
+    color: var(--cds-text-helper);
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+
+  .detail__files-list {
+    list-style: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  .detail__files-list li {
+    padding: 3px 0;
+    color: var(--cds-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .detail__files-list li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--teal-60);
+    flex-shrink: 0;
+  }
+
+  .detail__finding {
+    background: var(--cds-layer-01);
+    border-left: 3px solid var(--cds-border-subtle);
+    padding: 8px 10px;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+
+  .detail__finding--error   { border-left-color: var(--cds-support-error);   }
+  .detail__finding--warning { border-left-color: var(--yellow-30);           }
+  .detail__finding--info    { border-left-color: var(--cds-support-info);    }
+
+  .detail__finding-severity {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32px;
+    margin-bottom: 2px;
+  }
+
+  .detail__finding--error   .detail__finding-severity { color: var(--cds-support-error);   }
+  .detail__finding--warning .detail__finding-severity { color: var(--yellow-30);           }
+  .detail__finding--info    .detail__finding-severity { color: var(--cds-support-info);    }
+
+  .detail__finding-msg {
+    color: var(--cds-text-secondary);
+    line-height: 1.3;
+  }
+
+  /* Task status mini-tag inside detail */
+  .mini-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 0;
+    letter-spacing: 0.16px;
+    text-transform: uppercase;
+  }
+
+  .mini-tag--pending  { background: rgba(141,141,141,0.15); color: var(--cds-text-helper);    }
+  .mini-tag--running  { background: var(--blue-bg);         color: var(--cds-support-info);   }
+  .mini-tag--review   { background: var(--yellow-bg);       color: var(--yellow-30);          }
+  .mini-tag--complete { background: var(--green-bg);        color: var(--cds-support-success);}
+  .mini-tag--failed   { background: var(--red-bg);          color: var(--cds-support-error);  }
+
+  /* Event stream */
+  .events {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .events__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 8px;
+    flex-shrink: 0;
+    background: var(--cds-background);
+    border-bottom: 1px solid var(--cds-border-subtle);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .events__title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32px;
+    color: var(--cds-text-helper);
+  }
+
+  .events__count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--cds-text-placeholder);
+  }
+
+  .events__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 16px;
+  }
+
+  .event-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(57, 57, 57, 0.3);
+    font-size: 12px;
+  }
+
+  .event-row:last-child {
+    border-bottom: none;
+  }
+
+  .event-row__time {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--cds-text-placeholder);
+    flex-shrink: 0;
+    min-width: 60px;
+    padding-top: 1px;
+  }
+
+  .event-row__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .event-row__dot--start    { background: var(--teal-60);             }
+  .event-row__dot--complete { background: var(--cds-support-success); }
+  .event-row__dot--fail     { background: var(--cds-support-error);   }
+  .event-row__dot--revision { background: var(--yellow-30);           }
+  .event-row__dot--info     { background: var(--cds-support-info);    }
+
+  .event-row__msg {
+    color: var(--cds-text-secondary);
+    line-height: 1.35;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  /* ========================================================
+     FOOTER - 40px
+     ======================================================== */
+  .shell-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    padding: 0 16px;
+    background: var(--cds-layer-01);
+    border-top: 1px solid var(--cds-border-subtle);
+    flex-shrink: 0;
+    font-size: 12px;
+    z-index: 100;
+  }
+
+  .shell-footer__tokens {
+    display: flex;
+    gap: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  .shell-footer__token-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .shell-footer__token-label {
+    color: var(--cds-text-helper);
+    font-weight: 400;
+  }
+
+  .shell-footer__token-value {
+    color: var(--cds-text-secondary);
+    font-weight: 500;
+  }
+
+  .shell-footer__right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 11px;
+    color: var(--cds-text-helper);
+  }
+
+  .shell-footer__refresh-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cds-support-success);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  /* ========================================================
+     WAITING STATE
+     ======================================================== */
+  .waiting {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--cds-text-placeholder);
+  }
+
+  .waiting__spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--cds-border-subtle);
+    border-top-color: var(--teal-60);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .waiting__text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cds-text-secondary);
+  }
+
+  .waiting__sub {
+    font-size: 12px;
+    color: var(--cds-text-placeholder);
+  }
+
+  /* ========================================================
+     SCROLLBAR
+     ======================================================== */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--cds-layer-02); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--cds-layer-active); }
+
+  /* Utility */
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+<script>
+// ============================================================
+//  BANH MI OPS COMMAND CENTER
+//  Demo state data for when state.json is unavailable
+// ============================================================
+
+const DEMO_STATE = {
+  operation: {
+    title: "Implement user authentication system",
+    status: "executing",
+    started_at: new Date(Date.now() - 742000).toISOString(),
+    division: "fullstack"
+  },
+  tasks: [
+    {
+      id: "T-001",
+      title: "Design auth database schema and migrations",
+      status: "complete",
+      worker: "schema-architect",
+      model: "opus",
+      dependencies: [],
+      started_at: new Date(Date.now() - 720000).toISOString(),
+      completed_at: new Date(Date.now() - 540000).toISOString(),
+      revisions: 0,
+      tokens: { input: 14200, output: 4800 },
+      cost_usd: 0.18,
+      analyst_verdict: "PASS",
+      analyst_findings: [],
+      files_changed: [
+        "db/migrations/001_create_users.sql",
+        "db/migrations/002_create_sessions.sql",
+        "db/schema.prisma"
+      ]
+    },
+    {
+      id: "T-002",
+      title: "Build JWT token service with refresh rotation",
+      status: "complete",
+      worker: "backend-engineer",
+      model: "opus",
+      dependencies: ["T-001"],
+      started_at: new Date(Date.now() - 530000).toISOString(),
+      completed_at: new Date(Date.now() - 360000).toISOString(),
+      revisions: 1,
+      tokens: { input: 18700, output: 6200 },
+      cost_usd: 0.24,
+      analyst_verdict: "PASS",
+      analyst_findings: [
+        { severity: "warning", message: "Token expiry set to 24h, consider reducing to 1h for production" }
+      ],
+      files_changed: [
+        "src/services/jwt.service.ts",
+        "src/services/token-rotation.ts",
+        "src/types/auth.types.ts",
+        "tests/jwt.service.test.ts"
+      ]
+    },
+    {
+      id: "T-003",
+      title: "Create auth middleware and route guards",
+      status: "running",
+      worker: "backend-engineer",
+      model: "sonnet",
+      dependencies: ["T-002"],
+      started_at: new Date(Date.now() - 180000).toISOString(),
+      completed_at: null,
+      revisions: 0,
+      tokens: { input: 9400, output: 2100 },
+      cost_usd: 0.06,
+      analyst_verdict: null,
+      analyst_findings: [],
+      files_changed: []
+    },
+    {
+      id: "T-004",
+      title: "Build login and registration form components",
+      status: "running",
+      worker: "frontend-engineer",
+      model: "sonnet",
+      dependencies: ["T-001"],
+      started_at: new Date(Date.now() - 150000).toISOString(),
+      completed_at: null,
+      revisions: 0,
+      tokens: { input: 7600, output: 1800 },
+      cost_usd: 0.05,
+      analyst_verdict: null,
+      analyst_findings: [],
+      files_changed: []
+    },
+    {
+      id: "T-005",
+      title: "Implement password hashing with Argon2",
+      status: "review",
+      worker: "security-engineer",
+      model: "opus",
+      dependencies: ["T-001"],
+      started_at: new Date(Date.now() - 400000).toISOString(),
+      completed_at: new Date(Date.now() - 120000).toISOString(),
+      revisions: 0,
+      tokens: { input: 11200, output: 3600 },
+      cost_usd: 0.14,
+      analyst_verdict: "REVISION",
+      analyst_findings: [
+        { severity: "error", message: "Salt rounds parameter missing from config, falling back to unsafe default" },
+        { severity: "warning", message: "No rate limiting on password verification endpoint" }
+      ],
+      files_changed: [
+        "src/services/password.service.ts",
+        "src/config/security.config.ts",
+        "tests/password.service.test.ts"
+      ]
+    },
+    {
+      id: "T-006",
+      title: "Write E2E tests for auth flow",
+      status: "pending",
+      worker: null,
+      model: "haiku",
+      dependencies: ["T-003", "T-004", "T-005"],
+      started_at: null,
+      completed_at: null,
+      revisions: 0,
+      tokens: { input: 0, output: 0 },
+      cost_usd: 0,
+      analyst_verdict: null,
+      analyst_findings: [],
+      files_changed: []
+    }
+  ],
+  cost: {
+    total_input: 61100,
+    total_output: 18500,
+    estimated_usd: 0.67
+  },
+  events: [
+    { time: new Date(Date.now() - 742000).toISOString(), type: "operation_start", message: "Operation initialized: Implement user authentication system" },
+    { time: new Date(Date.now() - 720000).toISOString(), type: "worker_start",    message: "T-001 dispatched to schema-architect (opus)" },
+    { time: new Date(Date.now() - 540000).toISOString(), type: "worker_complete", message: "T-001 completed: Design auth database schema and migrations" },
+    { time: new Date(Date.now() - 538000).toISOString(), type: "analyst_verdict",  message: "T-001 verdict: PASS. Schema design is clean, indexes are appropriate." },
+    { time: new Date(Date.now() - 530000).toISOString(), type: "worker_start",    message: "T-002 dispatched to backend-engineer (opus)" },
+    { time: new Date(Date.now() - 400000).toISOString(), type: "worker_start",    message: "T-005 dispatched to security-engineer (opus)" },
+    { time: new Date(Date.now() - 370000).toISOString(), type: "worker_complete", message: "T-002 completed (attempt 1), pending review" },
+    { time: new Date(Date.now() - 368000).toISOString(), type: "revision",        message: "T-002 revision requested: token expiry configuration needs adjustment" },
+    { time: new Date(Date.now() - 360000).toISOString(), type: "worker_complete", message: "T-002 completed (attempt 2): JWT service with refresh rotation" },
+    { time: new Date(Date.now() - 358000).toISOString(), type: "analyst_verdict",  message: "T-002 verdict: PASS. Refresh rotation logic is solid." },
+    { time: new Date(Date.now() - 180000).toISOString(), type: "worker_start",    message: "T-003 dispatched to backend-engineer (sonnet)" },
+    { time: new Date(Date.now() - 150000).toISOString(), type: "worker_start",    message: "T-004 dispatched to frontend-engineer (sonnet)" },
+    { time: new Date(Date.now() - 120000).toISOString(), type: "worker_complete", message: "T-005 completed, pending review" },
+    { time: new Date(Date.now() - 118000).toISOString(), type: "analyst_verdict",  message: "T-005 verdict: REVISION. Missing salt config, no rate limiting." }
+  ]
+};
+
+// ============================================================
+//  APPLICATION STATE
+// ============================================================
+let state = null;
+let selectedTaskId = null;
+let demoMode = false;
+let elapsedInterval = null;
+let refreshInterval = null;
+
+// ============================================================
+//  UTILITIES
+// ============================================================
+
+function esc(str) {
+  if (!str) return "";
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function fmtTime(iso) {
+  if (!iso) return "--:--:--";
+  return new Date(iso).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+}
+
+function fmtElapsed(iso) {
+  if (!iso) return "00:00:00";
+  const ms = Math.max(0, Date.now() - new Date(iso).getTime());
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function fmtNum(n) {
+  if (n == null || n === 0) return "0";
+  return n.toLocaleString("en-US");
+}
+
+function fmtCost(usd) {
+  if (usd == null || usd === 0) return "$0.00";
+  return "$" + usd.toFixed(2);
+}
+
+function fmtTokensShort(n) {
+  if (n == null || n === 0) return "0";
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
+  if (n >= 1000) return (n / 1000).toFixed(1) + "K";
+  return String(n);
+}
+
+function eventDotClass(type) {
+  if (!type) return "info";
+  if (type.includes("start") || type === "operation_start") return "start";
+  if (type.includes("complete")) return "complete";
+  if (type.includes("fail") || type.includes("error")) return "fail";
+  if (type.includes("revision") || type.includes("revert")) return "revision";
+  return "info";
+}
+
+function modelTagClass(model) {
+  if (!model) return "default";
+  const m = model.toLowerCase();
+  if (m.includes("opus"))   return "opus";
+  if (m.includes("sonnet")) return "sonnet";
+  if (m.includes("haiku"))  return "haiku";
+  if (m.includes("flash"))  return "flash";
+  return "default";
+}
+
+function taskStatusForKanban(status) {
+  if (!status) return "pending";
+  const s = status.toLowerCase();
+  if (s === "pending" || s === "blocked")    return "pending";
+  if (s === "running" || s === "dispatched") return "running";
+  if (s === "review" || s === "revision")    return "review";
+  if (s === "complete" || s === "done")      return "complete";
+  if (s === "failed")                        return "failed";
+  return "pending";
+}
+
+// ============================================================
+//  BUILD MODEL USAGE FROM TASKS
+// ============================================================
+function getModelUsage(tasks) {
+  const counts = {};
+  tasks.forEach(t => {
+    const m = (t.model || "unknown").toLowerCase();
+    counts[m] = (counts[m] || 0) + 1;
+  });
+  return counts;
+}
+
+// ============================================================
+//  RENDER ENGINE
+// ============================================================
+
+function render() {
+  const app = document.getElementById("app");
+
+  if (!state) {
+    app.innerHTML = renderWaiting();
+    return;
+  }
+
+  const op     = state.operation || {};
+  const tasks  = state.tasks || [];
+  const cost   = state.cost || {};
+  const events = state.events || [];
+
+  // Categorize tasks
+  const buckets = { pending: [], running: [], review: [], complete: [] };
+  tasks.forEach(t => {
+    const cat = taskStatusForKanban(t.status);
+    if (cat === "failed") {
+      buckets.complete.push(t); // show failed alongside complete
+    } else if (buckets[cat]) {
+      buckets[cat].push(t);
+    } else {
+      buckets.pending.push(t);
+    }
+  });
+
+  const sel = selectedTaskId ? tasks.find(t => t.id === selectedTaskId) : null;
+
+  app.innerHTML = `
+    ${renderHeader(op, cost)}
+    <div class="layout">
+      ${renderSidebar(op, cost, tasks)}
+      ${renderKanban(buckets)}
+      ${renderRightPanel(sel, events)}
+    </div>
+    ${renderFooter(cost, events)}
+  `;
+
+  bindTaskClicks();
+}
+
+// ---- HEADER ----
+
+function renderHeader(op, cost) {
+  const statusClass = (op.status || "planning").toLowerCase();
+  const statusLabel = (op.status || "planning").toUpperCase();
+
+  return `
+    <div class="shell-header">
+      <div class="shell-header__brand">
+        <div class="shell-header__brand-icon">
+          <svg viewBox="0 0 16 16"><path d="M8 1l7 4v6l-7 4-7-4V5z"/></svg>
+        </div>
+        <span class="shell-header__brand-name">Banh Mi Ops</span>
+      </div>
+      <div class="shell-header__nav">
+        ${demoMode ? '<span class="demo-tag">DEMO</span>' : ''}
+      </div>
+      <div class="shell-header__center">
+        <span class="status-tag status-tag--${statusClass}">
+          <span class="status-tag__dot"></span>
+          ${esc(statusLabel)}
+        </span>
+      </div>
+      <div class="shell-header__right">
+        <div class="header-metric">
+          <span class="header-metric__label">Elapsed</span>
+          <span class="header-metric__value" id="js-elapsed">${fmtElapsed(op.started_at)}</span>
+        </div>
+        <div class="header-metric">
+          <span class="header-metric__label">Cost</span>
+          <span class="header-metric__value">${fmtCost(cost.estimated_usd)}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ---- LEFT SIDEBAR ----
+
+function renderSidebar(op, cost, tasks) {
+  const modelUsage  = getModelUsage(tasks);
+  const totalTasks  = tasks.length || 1;
+  const maxTokens   = Math.max(cost.total_input || 0, cost.total_output || 0, 1);
+
+  // Cost breakdown bars
+  const inputPct  = Math.round(((cost.total_input || 0) / maxTokens) * 100);
+  const outputPct = Math.round(((cost.total_output || 0) / maxTokens) * 100);
+
+  // Model bars
+  const models = Object.entries(modelUsage).sort((a, b) => b[1] - a[1]);
+
+  return `
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-heading">Operation</div>
+        <div class="op-card">
+          <div class="op-card__title">${esc(op.title || "Untitled Operation")}</div>
+          <div class="op-card__row">
+            <span class="op-card__label">Division</span>
+            <span class="op-card__value">${esc(op.division || "general")}</span>
+          </div>
+          <div class="op-card__row">
+            <span class="op-card__label">Tasks</span>
+            <span class="op-card__value">${tasks.length}</span>
+          </div>
+          <div class="op-card__row">
+            <span class="op-card__label">Started</span>
+            <span class="op-card__value">${fmtTime(op.started_at)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-heading">Token Usage</div>
+        <div class="cost-bar-row">
+          <div class="cost-bar-header">
+            <span class="cost-bar-label">Input</span>
+            <span class="cost-bar-value">${fmtTokensShort(cost.total_input)}</span>
+          </div>
+          <div class="cost-bar-track">
+            <div class="cost-bar-fill cost-bar-fill--input" style="width: ${inputPct}%"></div>
+          </div>
+        </div>
+        <div class="cost-bar-row">
+          <div class="cost-bar-header">
+            <span class="cost-bar-label">Output</span>
+            <span class="cost-bar-value">${fmtTokensShort(cost.total_output)}</span>
+          </div>
+          <div class="cost-bar-track">
+            <div class="cost-bar-fill cost-bar-fill--output" style="width: ${outputPct}%"></div>
+          </div>
+        </div>
+        <div class="cost-bar-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--cds-border-subtle);">
+          <div class="cost-bar-header">
+            <span class="cost-bar-label">Est. Cost</span>
+            <span class="cost-bar-value" style="color: var(--purple-50); font-weight: 600;">${fmtCost(cost.estimated_usd)}</span>
+          </div>
+          <div class="cost-bar-track">
+            <div class="cost-bar-fill cost-bar-fill--total" style="width: ${Math.min(100, (cost.estimated_usd || 0) * 100)}%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-heading">Model Tiers</div>
+        ${models.map(([name, count]) => {
+          const pct = Math.round((count / totalTasks) * 100);
+          const cls = modelTagClass(name);
+          return `
+            <div class="tier-bar-row">
+              <div class="tier-bar-header">
+                <span class="tier-bar-name">${esc(name)}</span>
+                <span class="tier-bar-count">${count} task${count !== 1 ? "s" : ""}</span>
+              </div>
+              <div class="tier-bar-track">
+                <div class="tier-bar-fill tier-bar-fill--${cls}" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
+
+// ---- KANBAN CENTER ----
+
+function renderKanban(buckets) {
+  const cols = [
+    { key: "pending",  label: "Pending",  cssClass: "pending"  },
+    { key: "running",  label: "Running",  cssClass: "running"  },
+    { key: "review",   label: "Review",   cssClass: "review"   },
+    { key: "complete", label: "Complete",  cssClass: "complete" }
+  ];
+
+  return `
+    <div class="kanban">
+      ${cols.map(col => {
+        const items = buckets[col.key] || [];
+        return `
+          <div class="kanban-col kanban-col--${col.cssClass}">
+            <div class="kanban-col__header">
+              <span class="kanban-col__title">${col.label}</span>
+              <span class="kanban-col__badge">${items.length}</span>
+            </div>
+            <div class="kanban-col__body">
+              ${items.length === 0
+                ? `<div class="kanban-col__empty">No tasks</div>`
+                : items.map(t => renderTaskCard(t)).join("")
+              }
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderTaskCard(task) {
+  const kanbanStatus = taskStatusForKanban(task.status);
+  const isSelected   = selectedTaskId === task.id;
+  const mClass       = modelTagClass(task.model);
+
+  let metaParts = [];
+
+  if (task.worker) {
+    metaParts.push(`<span class="task-card__worker">${esc(task.worker)}</span>`);
+  }
+
+  if (task.dependencies && task.dependencies.length > 0) {
+    if (metaParts.length > 0) metaParts.push('<span class="task-card__sep"></span>');
+    metaParts.push(`<span class="task-card__deps">dep: ${task.dependencies.join(", ")}</span>`);
+  }
+
+  if (task.analyst_verdict) {
+    if (metaParts.length > 0) metaParts.push('<span class="task-card__sep"></span>');
+    const vc = task.analyst_verdict === "PASS" ? "pass" : (task.analyst_verdict === "FAIL" ? "fail" : "revision");
+    metaParts.push(`<span class="task-card__verdict task-card__verdict--${vc}">${esc(task.analyst_verdict)}</span>`);
+  }
+
+  const runDot = kanbanStatus === "running" ? '<span class="task-card__running-indicator"></span>' : "";
+
+  return `
+    <div class="task-card task-card--${kanbanStatus}${isSelected ? " task-card--selected" : ""}" data-task-id="${esc(task.id)}">
+      <div class="task-card__top">
+        <span class="task-card__id">${runDot}${esc(task.id)}</span>
+        ${task.model ? `<span class="task-card__model-tag task-card__model-tag--${mClass}">${esc(task.model)}</span>` : ""}
+      </div>
+      <div class="task-card__title">${esc(task.title)}</div>
+      ${metaParts.length > 0 ? `<div class="task-card__meta">${metaParts.join("")}</div>` : ""}
+    </div>
+  `;
+}
+
+// ---- RIGHT PANEL ----
+
+function renderRightPanel(sel, events) {
+  return `
+    <div class="right-panel">
+      <div class="detail">
+        ${sel ? renderDetail(sel) : renderDetailEmpty()}
+      </div>
+      <div class="events">
+        <div class="events__header">
+          <span class="events__title">Event Stream</span>
+          <span class="events__count">${events.length} events</span>
+        </div>
+        <div class="events__body">
+          ${[...events].reverse().map(renderEvent).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderDetailEmpty() {
+  return `
+    <div class="detail__empty">
+      <div class="detail__empty-icon">
+        <svg viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1"/><line x1="6" y1="7" x2="10" y2="7" stroke="currentColor" stroke-width="1"/><line x1="6" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+      <span class="detail__empty-text">Select a task to inspect</span>
+    </div>
+  `;
+}
+
+function renderDetail(task) {
+  const statusCat = taskStatusForKanban(task.status);
+
+  let findingsHtml = "";
+  if (task.analyst_findings && task.analyst_findings.length > 0) {
+    findingsHtml = `
+      <div class="detail__section-heading">Findings</div>
+      ${task.analyst_findings.map(f => {
+        const sev = (f.severity || "info").toLowerCase();
+        return `
+          <div class="detail__finding detail__finding--${sev}">
+            <div class="detail__finding-severity">${esc(f.severity || "INFO")}</div>
+            <div class="detail__finding-msg">${esc(f.message || f.description || "")}</div>
+          </div>
+        `;
+      }).join("")}
+    `;
+  }
+
+  let filesHtml = "";
+  if (task.files_changed && task.files_changed.length > 0) {
+    filesHtml = `
+      <div class="detail__section-heading">Files Changed (${task.files_changed.length})</div>
+      <ul class="detail__files-list">
+        ${task.files_changed.map(f => `<li>${esc(f)}</li>`).join("")}
+      </ul>
+    `;
+  }
+
+  const verdictClass = task.analyst_verdict === "PASS" ? "pass" : (task.analyst_verdict === "FAIL" ? "fail" : "revision");
+
+  return `
+    <div class="detail__header">
+      <div class="detail__id">${esc(task.id)}</div>
+      <div class="detail__title">${esc(task.title)}</div>
+    </div>
+    <div class="detail__body">
+      <div class="detail__row">
+        <span class="detail__row-label">Status</span>
+        <span class="detail__row-value"><span class="mini-tag mini-tag--${statusCat}">${esc(task.status || "pending")}</span></span>
+      </div>
+      ${task.worker ? `
+      <div class="detail__row">
+        <span class="detail__row-label">Worker</span>
+        <span class="detail__row-value">${esc(task.worker)}</span>
+      </div>` : ""}
+      ${task.model ? `
+      <div class="detail__row">
+        <span class="detail__row-label">Model</span>
+        <span class="detail__row-value"><span class="task-card__model-tag task-card__model-tag--${modelTagClass(task.model)}">${esc(task.model)}</span></span>
+      </div>` : ""}
+      <div class="detail__row">
+        <span class="detail__row-label">Started</span>
+        <span class="detail__row-value mono">${fmtTime(task.started_at)}</span>
+      </div>
+      <div class="detail__row">
+        <span class="detail__row-label">Completed</span>
+        <span class="detail__row-value mono">${fmtTime(task.completed_at)}</span>
+      </div>
+      ${task.dependencies && task.dependencies.length > 0 ? `
+      <div class="detail__row">
+        <span class="detail__row-label">Dependencies</span>
+        <span class="detail__row-value mono">${task.dependencies.join(", ")}</span>
+      </div>` : ""}
+      ${task.analyst_verdict ? `
+      <div class="detail__row">
+        <span class="detail__row-label">Verdict</span>
+        <span class="detail__row-value"><span class="task-card__verdict task-card__verdict--${verdictClass}">${esc(task.analyst_verdict)}</span></span>
+      </div>` : ""}
+      ${task.revisions > 0 ? `
+      <div class="detail__row">
+        <span class="detail__row-label">Revisions</span>
+        <span class="detail__row-value">${task.revisions}</span>
+      </div>` : ""}
+      ${task.tokens ? `
+      <div class="detail__row">
+        <span class="detail__row-label">Tokens</span>
+        <span class="detail__row-value mono">${fmtTokensShort(task.tokens.input)} in / ${fmtTokensShort(task.tokens.output)} out</span>
+      </div>` : ""}
+      ${task.cost_usd != null && task.cost_usd > 0 ? `
+      <div class="detail__row">
+        <span class="detail__row-label">Task Cost</span>
+        <span class="detail__row-value mono">${fmtCost(task.cost_usd)}</span>
+      </div>` : ""}
+      ${findingsHtml}
+      ${filesHtml}
+    </div>
+  `;
+}
+
+function renderEvent(ev) {
+  const dotCls = eventDotClass(ev.type || "");
+  return `
+    <div class="event-row">
+      <span class="event-row__time">${fmtTime(ev.time)}</span>
+      <span class="event-row__dot event-row__dot--${dotCls}"></span>
+      <span class="event-row__msg">${esc(ev.message || "")}</span>
+    </div>
+  `;
+}
+
+// ---- FOOTER ----
+
+function renderFooter(cost, events) {
+  return `
+    <div class="shell-footer">
+      <div class="shell-footer__tokens">
+        <span class="shell-footer__token-item">
+          <span class="shell-footer__token-label">Input Tokens</span>
+          <span class="shell-footer__token-value">${fmtNum(cost.total_input)}</span>
+        </span>
+        <span class="shell-footer__token-item">
+          <span class="shell-footer__token-label">Output Tokens</span>
+          <span class="shell-footer__token-value">${fmtNum(cost.total_output)}</span>
+        </span>
+        <span class="shell-footer__token-item">
+          <span class="shell-footer__token-label">Total Cost</span>
+          <span class="shell-footer__token-value" style="color: var(--purple-50);">${fmtCost(cost.estimated_usd)}</span>
+        </span>
+      </div>
+      <div class="shell-footer__right">
+        <span class="shell-footer__refresh-dot"></span>
+        <span>Auto-refresh 2s</span>
+        <span>${demoMode ? "Demo Mode" : "Live"}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ---- WAITING STATE ----
+
+function renderWaiting() {
+  return `
+    <div class="shell-header">
+      <div class="shell-header__brand">
+        <div class="shell-header__brand-icon">
+          <svg viewBox="0 0 16 16"><path d="M8 1l7 4v6l-7 4-7-4V5z"/></svg>
+        </div>
+        <span class="shell-header__brand-name">Banh Mi Ops</span>
+      </div>
+      <div class="shell-header__center"></div>
+      <div class="shell-header__right"></div>
+    </div>
+    <div class="waiting">
+      <div class="waiting__spinner"></div>
+      <div class="waiting__text">Waiting for operation data</div>
+      <div class="waiting__sub">Polling state.json every 2 seconds</div>
+    </div>
+    <div class="shell-footer">
+      <div class="shell-footer__tokens"></div>
+      <div class="shell-footer__right">
+        <span class="shell-footer__refresh-dot"></span>
+        <span>Connecting</span>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+//  INTERACTIVITY
+// ============================================================
+
+function bindTaskClicks() {
+  document.querySelectorAll(".task-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const id = card.dataset.taskId;
+      if (selectedTaskId === id) {
+        selectedTaskId = null; // toggle off
+      } else {
+        selectedTaskId = id;
+      }
+      render();
+    });
+  });
+}
+
+// ============================================================
+//  ELAPSED TIMER (ticks every 1s)
+// ============================================================
+
+function tickElapsed() {
+  const el = document.getElementById("js-elapsed");
+  if (el && state && state.operation && state.operation.started_at) {
+    el.textContent = fmtElapsed(state.operation.started_at);
+  }
+}
+
+// ============================================================
+//  DATA LOADING (auto-refresh every 2s)
+// ============================================================
+
+async function loadState() {
+  try {
+    const resp = await fetch("state.json", { cache: "no-store" });
+    if (!resp.ok) throw new Error("not found");
+    const data = await resp.json();
+    state = data;
+    demoMode = false;
+  } catch (e) {
+    if (!state) {
+      state = DEMO_STATE;
+      demoMode = true;
+    }
+  }
+  render();
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+
+loadState();
+refreshInterval = setInterval(loadState, 2000);
+elapsedInterval = setInterval(tickElapsed, 1000);
+</script>
+</body>
+</html>
