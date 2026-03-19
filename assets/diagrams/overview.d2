@@ -1,0 +1,160 @@
+direction: down
+
+vars: {
+  d2-config: {
+    theme-id: 200
+    dark-theme-id: 200
+    pad: 80
+    layout-engine: elk
+  }
+}
+
+classes: {
+  lead: {
+    shape: rectangle
+    style: {
+      font-size: 20
+      bold: true
+      font-color: "#f4f4f4"
+      fill: "#393939"
+      stroke: "#f4f4f4"
+      stroke-width: 2
+      border-radius: 0
+    }
+  }
+  coordinator: {
+    shape: rectangle
+    style: {
+      font-size: 20
+      bold: true
+      font-color: "#161616"
+      fill: "#009d9a"
+      stroke: "#009d9a"
+      stroke-width: 2
+      border-radius: 0
+    }
+  }
+  phase: {
+    shape: rectangle
+    style: {
+      font-size: 18
+      font-color: "#f4f4f4"
+      fill: "#262626"
+      stroke: "#393939"
+      stroke-width: 2
+      border-radius: 0
+    }
+  }
+  worker: {
+    shape: rectangle
+    style: {
+      font-size: 16
+      font-color: "#c6c6c6"
+      fill: "#262626"
+      stroke: "#393939"
+      stroke-width: 2
+      border-radius: 0
+    }
+  }
+  reviewer: {
+    shape: rectangle
+    style: {
+      font-size: 16
+      font-color: "#c6c6c6"
+      fill: "#262626"
+      stroke: "#24a148"
+      stroke-width: 2
+      border-radius: 0
+    }
+  }
+  tester: {
+    shape: rectangle
+    style: {
+      font-size: 16
+      font-color: "#c6c6c6"
+      fill: "#262626"
+      stroke: "#0f62fe"
+      stroke-width: 2
+      border-radius: 0
+    }
+  }
+  arrow: {
+    style: {
+      stroke: "#525252"
+      stroke-width: 2
+      font-size: 15
+      font-color: "#c6c6c6"
+    }
+  }
+  teal-arrow: {
+    style: {
+      stroke: "#009d9a"
+      stroke-width: 3
+      font-size: 15
+      font-color: "#009d9a"
+    }
+  }
+}
+
+lead: "Lead (You)" {class: lead}
+
+coordinator: Coordinator {class: coordinator}
+
+recon: "1. Recon" {
+  class: phase
+  label: "1. Recon\nCodebase reconnaissance"
+}
+
+decompose: "2. Decompose" {
+  class: phase
+  label: "2. Decompose\nTasks, dependencies, model tiers"
+}
+
+execute: "3. Execute" {
+  style: {
+    fill: "#1e1e1e"
+    stroke: "#393939"
+    stroke-width: 2
+    border-radius: 0
+    font-size: 18
+    font-color: "#f4f4f4"
+  }
+
+  backend: Backend Worker {class: worker}
+  frontend: Frontend Worker {class: worker}
+  fullstack: Fullstack Worker {class: worker}
+}
+
+quality: "4. Quality Gates" {
+  style: {
+    fill: "#1e1e1e"
+    stroke: "#393939"
+    stroke-width: 2
+    border-radius: 0
+    font-size: 18
+    font-color: "#f4f4f4"
+  }
+
+  code: Code Reviewer {class: reviewer}
+  visual: Visual Reviewer {class: reviewer}
+  test: Testing Worker {class: tester}
+}
+
+revision: "5. Smart Revision" {
+  class: phase
+  label: "5. Smart Revision\nAccept / Revise / Escalate"
+}
+
+report: "6. Report" {
+  class: phase
+  label: "6. Report\nResults + dashboard update"
+}
+
+lead -> coordinator: /banhmi {class: teal-arrow}
+coordinator -> recon {class: arrow}
+recon -> decompose {class: arrow}
+decompose -> execute {class: arrow}
+execute -> quality {class: arrow}
+quality -> revision: findings {class: arrow}
+revision -> execute: re-dispatch {class: arrow}
+quality -> report: pass {class: teal-arrow}
