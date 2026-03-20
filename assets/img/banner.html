@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Banh Mi Ops Banner</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;600&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1200px;
+      height: 300px;
+      overflow: hidden;
+      background: #161616;
+      font-family: 'IBM Plex Sans', sans-serif;
+      position: relative;
+    }
+
+    /* Faint <\> watermark behind everything */
+    .watermark {
+      position: absolute;
+      right: 80px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 160px;
+      font-weight: 200;
+      color: rgba(13,148,136,0.045);
+      letter-spacing: 8px;
+      user-select: none;
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      padding: 0 80px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .title {
+      font-size: 52px;
+      font-weight: 300;
+      color: #f4f4f4;
+      letter-spacing: 0.01em;
+      line-height: 1;
+    }
+
+    .accent {
+      width: 48px;
+      height: 2px;
+      background: #0d9488;
+      margin: 16px 0;
+    }
+
+    .tagline {
+      font-size: 15px;
+      font-weight: 400;
+      color: #6f6f6f;
+      letter-spacing: 0.005em;
+    }
+
+    .subtitle {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 300;
+      color: #6f6f6f;
+      margin-top: 12px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="watermark">&lt;\&gt;</div>
+  <div class="content">
+    <div class="title">BANH MI OPS</div>
+    <div class="accent"></div>
+    <div class="tagline">Coordinate the operation. Ship the work.</div>
+    <div class="subtitle">Multi-agent orchestration for Claude Code</div>
+  </div>
+</body>
+</html>
