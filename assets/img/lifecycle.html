@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Banh Mi Ops Quality Gates</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 600px;
+      height: 1067px;
+      overflow: hidden;
+      background: #161616;
+      font-family: 'IBM Plex Sans', sans-serif;
+      padding: 40px 48px;
+    }
+
+    .header {
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 300;
+      color: #f4f4f4;
+      letter-spacing: 0.01em;
+    }
+    .header p {
+      font-size: 13px;
+      color: #6f6f6f;
+      margin-top: 4px;
+    }
+
+    .gates {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .gate {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    /* Vertical connector line */
+    .gate:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 40px;
+      bottom: 0;
+      width: 2px;
+      background: #393939;
+    }
+
+    .gate-left {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gate-number {
+      position: relative;
+      z-index: 1;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 400;
+      color: #161616;
+      background: #009d9a;
+    }
+
+    .gate-right {
+      padding-top: 4px;
+      flex: 1;
+    }
+
+    .gate-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #f4f4f4;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .gate-desc {
+      font-size: 12px;
+      color: #6f6f6f;
+      line-height: 1.5;
+    }
+
+    .gate-agents {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .agent-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #c6c6c6;
+      background: #262626;
+      border: 1px solid #393939;
+      padding: 2px 8px;
+    }
+
+    .agent-tag.teal {
+      border-color: #009d9a;
+      color: #009d9a;
+    }
+    .agent-tag.green {
+      border-color: #24a148;
+      color: #24a148;
+    }
+    .agent-tag.blue {
+      border-color: #0f62fe;
+      color: #78a9ff;
+    }
+
+    .gate-outcome {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #525252;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Quality Gates</h1>
+    <p>Eight gates, top to bottom. No gate can be skipped.</p>
+  </div>
+
+  <div class="gates">
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">01</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Intent</div>
+        <div class="gate-desc">Lead describes the objective. Coordinator validates scope and feasibility.</div>
+        <div class="gate-agents"><span class="agent-tag teal">Coordinator</span></div>
+        <div class="gate-outcome">Output: validated scope</div>
+      </div>
+    </div>
+
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">02</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Plan</div>
+        <div class="gate-desc">Decompose into tasks with dependencies, complexity estimates, and model tiers. Lead approves.</div>
+        <div class="gate-agents">
+          <span class="agent-tag teal">Coordinator</span>
+          <span class="agent-tag">Planner</span>
+        </div>
+        <div class="gate-outcome">Output: approved prd.json</div>
+      </div>
+    </div>
+
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">03</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Recon</div>
+        <div class="gate-desc">Scan codebase structure, detect platform, map conventions and risk areas.</div>
+        <div class="gate-agents"><span class="agent-tag">Recon Worker</span></div>
+        <div class="gate-outcome">Output: recon data</div>
+      </div>
+    </div>
+
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">04</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Execute</div>
+        <div class="gate-desc">Workers implement tasks in parallel. Post-edit diagnostics catch regressions at the source.</div>
+        <div class="gate-agents">
+          <span class="agent-tag">Backend</span>
+          <span class="agent-tag">Frontend</span>
+          <span class="agent-tag">Fullstack</span>
+        </div>
+        <div class="gate-outcome">Output: code changes + structured debrief</div>
+      </div>
+    </div>
+
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">05</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Code Review</div>
+        <div class="gate-desc">Independent reviewer analyzes the diff for bugs, standards violations, and security issues. Never saw the original prompt.</div>
+        <div class="gate-agents"><span class="agent-tag green">Code Reviewer</span></div>
+        <div class="gate-outcome">Verdict: PASS / FAIL</div>
+      </div>
+    </div>
+
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">06</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Test Verification</div>
+        <div class="gate-desc">Testing worker writes and runs unit, kernel, or integration tests against the changes.</div>
+        <div class="gate-agents"><span class="agent-tag blue">Testing Worker</span></div>
+        <div class="gate-outcome">Verdict: tests pass / fail</div>
+      </div>
+    </div>
+
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">07</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Visual Review</div>
+        <div class="gate-desc">Browser-based validation of UI rendering, layout, and accessibility. Skipped for backend-only tasks.</div>
+        <div class="gate-agents"><span class="agent-tag green">Visual Reviewer</span></div>
+        <div class="gate-outcome">Verdict: PASS / FAIL</div>
+      </div>
+    </div>
+
+    <div class="gate">
+      <div class="gate-left"><div class="gate-number">08</div></div>
+      <div class="gate-right">
+        <div class="gate-title">Delivery</div>
+        <div class="gate-desc">Smart revision: accept, targeted fix, full rework, or escalate. Report generated, dashboard updated.</div>
+        <div class="gate-agents">
+          <span class="agent-tag teal">Coordinator</span>
+          <span class="agent-tag">Report Writer</span>
+        </div>
+        <div class="gate-outcome">Output: report + dashboard</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
