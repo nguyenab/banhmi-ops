@@ -81,6 +81,7 @@ The framework is built on principles that have worked for decades in other engin
 - Node.js 18+ (for report rendering)
 - Git
 - Bash (included on macOS and Linux; use Git Bash or WSL on Windows)
+- [Playwright MCP](https://github.com/anthropics/anthropic-quickstarts/tree/main/mcp-server-playwright) (optional, for Visual Reviewer browser validation)
 
 ### Install
 
